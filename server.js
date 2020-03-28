@@ -16,8 +16,7 @@ function getDate() {
 
 app.use(bodyParser())
 
-const port = 4000
-
+var port = process.env.PORT || 5000;
 
 var accountSid = 'ACa1b8d77fa627b46285fb2236cd94cc22'; // Your Account SID from www.twilio.com/console
 var authToken = '982c71fb4e5af019c355f909024113e3';   // Your Auth Token from www.twilio.com/console
