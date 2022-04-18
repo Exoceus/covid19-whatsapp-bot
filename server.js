@@ -5,9 +5,9 @@ var bodyParser = require('body-parser')
 const axios = require('axios');
 var csv = require('csvtojson')
 
-function getDate() {
+function getDate(n) {
     var date = new Date();
-    var dd = String(date.getDate() - 1).padStart(2, '0');//so that we get yesterday's data
+    var dd = String(date.getDate() - n).padStart(2, '0');//so that we get yesterday's data
     var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = date.getFullYear();
 
@@ -24,17 +24,15 @@ var client = new twilio(accountSid, authToken);
 
 app.get('/', (req, res) => {
 
-    date = getDate()
+    date = getDate(1)
     preferred_country = "Canada"
 
-    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" + getDate() + ".csv"
+    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" + date + ".csv"
     axios.get(url)
         .then(response => {
             var confirmed = 0, deaths = 0, recovered = 0, active = 0;
 
             csv().fromString(response.data).then((data_json) => {
-
-
                 var country_data = data_json.filter(entry => entry.Country_Region == "Canada")
                 var bruh
                 country_data.forEach(entry => {
@@ -57,10 +55,10 @@ app.post('/sms', async (req, res) => {
 
 
 
-    date = getDate()
+    date = getDate(1)
     preferred_country = body
 
-    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" + getDate() + ".csv"
+    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" + date + ".csv"
     axios.get(url)
         .then(response => {
             var confirmed = 0, deaths = 0, recovered = 0;
@@ -90,6 +88,7 @@ app.post('/sms', async (req, res) => {
                 }
 
                 var countries_list = getCountriesList()
+
 
                 var countryCheck = countries_list.indexOf(preferred_country);
 
